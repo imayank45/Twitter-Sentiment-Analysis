@@ -9,7 +9,7 @@ import string
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd
 import pickle
-
+import nltk
 try:
     nltk.data.find('corpora/stopwords')
 except LookupError:
