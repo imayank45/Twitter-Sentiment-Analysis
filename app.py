@@ -10,6 +10,11 @@ from nltk.tokenize import RegexpTokenizer
 import pandas as pd
 import pickle
 
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
+    
 # Load pre-trained model (replace with your model path)
 loaded_model = load_model('lstm_model.h5')
 tok = Tokenizer(num_words=2000)
