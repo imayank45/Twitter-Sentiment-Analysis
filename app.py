@@ -1,6 +1,6 @@
 import streamlit as st
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 import re
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
@@ -9,18 +9,18 @@ import string
 from nltk.tokenize import RegexpTokenizer
 import pandas as pd
 import pickle
+import tensorflow as tf
 import nltk
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords')
+nltk.download('stopwords')
 nltk.download('wordnet')
+
+
 # Load pre-trained model (replace with your model path)
-loaded_model = load_model('lstm_model.h5')
-tok = Tokenizer(num_words=2000)
-max_len = 500
+loaded_model = tf.keras.models.load_model('lstm_model.h5')
+
+# Load tokenizer
 with open('tokenizer_f.pickle', 'rb') as handle:
-    tok1 = pickle.load(handle)
+    tok = pickle.load(handle)
 
 # Preprocessing functions (assuming these are defined elsewhere)
 def preprocess_text(text):
@@ -48,7 +48,7 @@ def preprocess_text(text):
 # Function to make prediction
 def predict(text):
     preprocessed_text = preprocess_text(text)
-    sequence = tok1.texts_to_sequences([preprocessed_text])
+    sequence = tok.texts_to_sequences([preprocessed_text])
     padded_sequence = pad_sequences(sequence, maxlen=max_len)
     prediction = loaded_model.predict(padded_sequence)
     return prediction
@@ -58,6 +58,7 @@ st.title("Hate Speech Detection App")
 st.subheader("Enter tweet for Hate Speech Detection:")
 user_input = st.text_input("Enter tweet to analyze:")
 if st.button("Submit Your Tweet"):
+    max_len = 500  # Adjust max_len here
     prediction = predict(user_input)
     if prediction > 0.5:
         st.success('No Hate Speech')
